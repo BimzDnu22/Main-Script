@@ -11,81 +11,97 @@ local PlaceScripts = {
 
 local TargetExecutorLower = "xeno"
 
-local function ShowSupportNotif()
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local function ShowBimzHubNotif()
     local plr = Players.LocalPlayer
     if not plr then return end
     local CoreGui = game:GetService("CoreGui")
 
-    -- Hapus lama
-    if CoreGui:FindFirstChild("BimzNotif") then
-        CoreGui.BimzNotif:Destroy()
+    if CoreGui:FindFirstChild("BimzHubNotif") then
+        CoreGui.BimzHubNotif:Destroy()
     end
 
     local gui = Instance.new("ScreenGui")
-    gui.Name = "BimzNotif"
+    gui.Name = "BimzHubNotif"
     gui.Parent = CoreGui
     gui.ResetOnSpawn = false
 
+    -- Frame utama
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 120)
-    frame.Position = UDim2.new(0.5, -150, 1, 200)
-    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    frame.BackgroundTransparency = 1
+    frame.Size = UDim2.new(0, 420, 0, 220)
+    frame.Position = UDim2.new(0.5, -210, 1, 300)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30) -- mirip background discord pop up
+    frame.BackgroundTransparency = 0.7
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Parent = gui
     frame.ClipsDescendants = true
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
-    local corner = Instance.new("UICorner", frame)
-    corner.CornerRadius = UDim.new(0, 12)
-
+    -- Title
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, -20, 0, 40)
     title.Position = UDim2.new(0, 10, 0, 10)
     title.BackgroundTransparency = 1
-    title.Text = "⚡ Support Bimz Dnu ⚡"
+    title.Text = "Join Our Community"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextScaled = true
     title.Font = Enum.Font.GothamBold
+    title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = frame
 
+    -- Subtitle
+    local subtitle = Instance.new("TextLabel")
+    subtitle.Size = UDim2.new(1, -20, 0, 20)
+    subtitle.Position = UDim2.new(0, 10, 0, 50)
+    subtitle.BackgroundTransparency = 1
+    subtitle.Text = "Join Discord For More Update!"
+    subtitle.TextColor3 = Color3.fromRGB(180, 180, 200)
+    subtitle.TextScaled = true
+    subtitle.Font = Enum.Font.Gotham
+    subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    subtitle.Parent = frame
+
+    -- Deskripsi
+    local desc = Instance.new("TextLabel")
+    desc.Size = UDim2.new(1, -40, 0, 80)
+    desc.Position = UDim2.new(0, 20, 0, 80)
+    desc.BackgroundTransparency = 1
+    desc.TextWrapped = true
+    desc.Text = "Get access to new updates, events,\ngiveaways, and chat with other players in our official Discord server."
+    desc.TextColor3 = Color3.fromRGB(220, 220, 220)
+    desc.TextScaled = true
+    desc.Font = Enum.Font.Gotham
+    desc.TextXAlignment = Enum.TextXAlignment.Left
+    desc.Parent = frame
+
+    -- Tombol biru
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.6, 0, 0, 40)
-    button.Position = UDim2.new(0.2, 0, 1, -50)
-    button.BackgroundColor3 = Color3.fromRGB(50, 120, 220)
-    button.Text = "📋 Copy Link"
-    button.TextColor3 = Color3.new(1,1,1)
+    button.Size = UDim2.new(0.8, 0, 0, 50)
+    button.Position = UDim2.new(0.1, 0, 1, -70)
+    button.BackgroundColor3 = Color3.fromRGB(90, 110, 255) -- warna mirip discord button
+    button.Text = "Copy Invite & Join"
+    button.TextColor3 = Color3.new(1, 1, 1)
     button.Font = Enum.Font.GothamBold
     button.TextScaled = true
     button.Parent = frame
-
-    local btncorner = Instance.new("UICorner", button)
-    btncorner.CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
 
     button.MouseButton1Click:Connect(function()
         if setclipboard then
-            setclipboard("https://github.com/BimzDnu21")
+            setclipboard("https://discord.gg/YourInviteCodeHere")
         end
         button.Text = "✅ Copied!"
         task.wait(1.5)
-        button.Text = "📋 Copy Link"
+        button.Text = "Copy Invite & Join"
     end)
 
-    -- ANIMASI MASUK
-    TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0.5, -150, 0.5, 0),
+    -- animasi masuk
+    TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, -210, 0.5, 0),
         BackgroundTransparency = 0
     }):Play()
-
-    task.delay(5, function()
-        local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-            Position = UDim2.new(0.5, -150, 1, 200),
-            BackgroundTransparency = 1
-        })
-        tweenOut:Play()
-        tweenOut.Completed:Connect(function()
-            gui:Destroy()
-        end)
-    end)
 end
 
 local function tryCall(fn)
@@ -132,7 +148,7 @@ if isXeno(currentExecutor) then
     return
 else
     print("✅ Safe executor detected: " .. tostring(currentExecutor))
-    ShowSupportNotif()
+    ShowBimzHubNotif()
 end
 
 local placeId = game.PlaceId
@@ -171,6 +187,7 @@ if ok then
 else
     warn("❌ Failed to load/execute remote script: " .. tostring(err))
 end
+
 
 
 
