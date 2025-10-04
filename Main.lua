@@ -11,9 +11,6 @@ local PlaceScripts = {
 
 local TargetExecutorLower = "xeno"
 
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-
 local function ShowBimzHubNotif()
     local plr = Players.LocalPlayer
     if not plr then return end
@@ -28,18 +25,16 @@ local function ShowBimzHubNotif()
     gui.Parent = CoreGui
     gui.ResetOnSpawn = false
 
-    -- Frame utama
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 420, 0, 220)
     frame.Position = UDim2.new(0.5, -210, 1, 300)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30) -- mirip background discord pop up
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     frame.BackgroundTransparency = 0.7
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Parent = gui
     frame.ClipsDescendants = true
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
-    -- Title
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, -20, 0, 40)
     title.Position = UDim2.new(0, 10, 0, 10)
@@ -51,7 +46,6 @@ local function ShowBimzHubNotif()
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = frame
 
-    -- Subtitle
     local subtitle = Instance.new("TextLabel")
     subtitle.Size = UDim2.new(1, -20, 0, 20)
     subtitle.Position = UDim2.new(0, 10, 0, 50)
@@ -63,7 +57,6 @@ local function ShowBimzHubNotif()
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.Parent = frame
 
-    -- Deskripsi
     local desc = Instance.new("TextLabel")
     desc.Size = UDim2.new(1, -40, 0, 80)
     desc.Position = UDim2.new(0, 20, 0, 80)
@@ -76,11 +69,10 @@ local function ShowBimzHubNotif()
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.Parent = frame
 
-    -- Tombol biru
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.8, 0, 0, 50)
     button.Position = UDim2.new(0.1, 0, 1, -70)
-    button.BackgroundColor3 = Color3.fromRGB(90, 110, 255) -- warna mirip discord button
+    button.BackgroundColor3 = Color3.fromRGB(90, 110, 255)
     button.Text = "Copy Invite & Join"
     button.TextColor3 = Color3.new(1, 1, 1)
     button.Font = Enum.Font.GothamBold
@@ -90,18 +82,28 @@ local function ShowBimzHubNotif()
 
     button.MouseButton1Click:Connect(function()
         if setclipboard then
-            setclipboard("https://discord.gg/YourInviteCodeHere")
+            setclipboard("https://discord.gg/qBEHCRtEQV")
         end
         button.Text = "✅ Copied!"
         task.wait(1.5)
         button.Text = "Copy Invite & Join"
     end)
 
-    -- animasi masuk
     TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
         Position = UDim2.new(0.5, -210, 0.5, 0),
         BackgroundTransparency = 0
     }):Play()
+
+    task.delay(5, function()
+        local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            Position = UDim2.new(0.5, -150, 1, 200),
+            BackgroundTransparency = 1
+        })
+        tweenOut:Play()
+        tweenOut.Completed:Connect(function()
+            gui:Destroy()
+        end)
+    end)
 end
 
 local function tryCall(fn)
@@ -148,7 +150,6 @@ if isXeno(currentExecutor) then
     return
 else
     print("✅ Safe executor detected: " .. tostring(currentExecutor))
-    ShowBimzHubNotif()
 end
 
 local placeId = game.PlaceId
@@ -162,32 +163,32 @@ if not url then
     return
 end
 
-local ok, err = pcall(function()
-    local got, content = pcall(function() return game:HttpGet(url) end)
-    if not (got and type(content) == "string") then
-        error("Failed to download remote script: " .. tostring(content))
-    end
+ShowBimzHubNotif()
 
-    local func
-    if loadstring then
-        func = loadstring(content)
-    else
-        local okLoad, loaded = pcall(function() return load(content) end)
-        if okLoad and type(loaded) == "function" then
-            func = loaded
+task.delay(5, function()
+    local ok, err = pcall(function()
+        local got, content = pcall(function() return game:HttpGet(url) end)
+        if not (got and type(content) == "string") then
+            error("Failed to download remote script: " .. tostring(content))
         end
+
+        local func
+        if loadstring then
+            func = loadstring(content)
+        else
+            local okLoad, loaded = pcall(function() return load(content) end)
+            if okLoad and type(loaded) == "function" then
+                func = loaded
+            end
+        end
+
+        if not func then error("loadstring/load returned nil") end
+        func()
+    end)
+
+    if ok then
+        print("✅ Remote script loaded and executed successfully.")
+    else
+        warn("❌ Failed to load/execute remote script: " .. tostring(err))
     end
-
-    if not func then error("loadstring/load returned nil") end
-    func()
 end)
-
-if ok then
-    print("✅ Remote script loaded and executed successfully.")
-else
-    warn("❌ Failed to load/execute remote script: " .. tostring(err))
-end
-
-
-
-
