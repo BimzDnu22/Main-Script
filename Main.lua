@@ -7,6 +7,10 @@ local PlaceScripts = {
     [9872472334]      = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Evade.lua",
     [10118559731]     = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Evade.lua",
     [121864768012064] = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Fist-It.lua",
+    [18519254033] = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Hit-Box.lua",
+    [15269951959] = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Hit-Box.lua",
+    [10449761463] = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Hit-Box.lua",
+    [4282985734] = "https://raw.githubusercontent.com/BimzDnu22/Main-Script/refs/heads/main/Script/Hit-Box.lua",
 }
 
 local TargetExecutorLower = "xeno"
@@ -192,3 +196,4 @@ task.delay(5, function()
         warn("❌ Failed to load/execute remote script: " .. tostring(err))
     end
 end)
+
